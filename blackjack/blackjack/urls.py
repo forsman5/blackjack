@@ -17,5 +17,7 @@ from django.contrib import admin
 from django.urls import path
 
 urlpatterns = [
+    # setting the default routes directly to game
+    path('', include('game.urls')),
     path('admin/', admin.site.urls),
 ]
