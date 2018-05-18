@@ -5,10 +5,16 @@ from django.http import HttpResponseRedirect
 from django import forms
 from .forms import UserRegistrationForm
 
-# Create your views here.
 def index(request):
     # the homepage
     return render(request, 'index.html')
+
+def userPage(request, user_id):
+    try:
+        user = User.objects.get(pk=user_id)
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+    return render(request, 'user.html', {'user': user})
 
 def register(request):
     if request.method == 'POST':

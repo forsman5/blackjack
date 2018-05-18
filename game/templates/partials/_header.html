@@ -14,9 +14,9 @@
         <a class="nav-link" href="#">Leaderboards</a>
       </li>
     </ul>
-    {% if request.user.is_authenticated %}
+    {% if user.is_authenticated %}
       <p class="navbar-text navbar-right">
-        Hello, <a class="navbar-link" href="#">{{ request.user.username }}</a>!
+        Hello, <a class="navbar-link" href="{% url 'userPage' user.id %}">{{ user.username }}</a>!
         <a href="{% url 'logout' %}" type="button" class="btn btn-primary">Sign Out</a>
       </p>
     {% else %}
