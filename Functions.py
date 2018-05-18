@@ -16,7 +16,7 @@ def createDeck():
     random.shuffle(deck)
     return deck
 
- def getValue(card):                                      #Assign value to card
+def getValue(card):                                      #Assign value to card
     if card['val'] == 'A':
         val = 11
     elif card['val'] == 'J' or card['val'] == 'Q' or card['val'] == 'K':
@@ -87,3 +87,7 @@ def DealerLogic(deck, hand):
         while getHandValue(hand) <=16:
             hit(deck, hand)
             print('The dealer will hit')
+
+TestDeck = createDeck()
+TestHand = getNewHand(TestDeck)
+DealerLogic(TestDeck, TestHand)
