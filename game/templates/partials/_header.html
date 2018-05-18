@@ -1,1 +1,24 @@
 <!-- header - navbar -->
+{% load static %}
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-fixed-top">
+  <div class="container-fluid">
+     <a class="navbar-brand" href="/">
+      <img src="{% static "images/ico_home.png" %}" alt="Let's Play Blackjack!" style="width:40px;">
+    </a>
+    <ul class="navbar-nav">
+      <!-- TODO: Active -->
+      <li class="nav-item">
+        <a class="nav-link" href="#">Play A Game</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Leaderboards</a>
+      </li>
+    </ul>
+    {% if request.user.is_authenticated %}
+      <p class="navbar-text navbar-right">
+        Hello, <a class="navbar-link" href="#">{{ request.user.username }}</a>!
+        <a href="#" type="button" class="btn btn-primary">Sign Out</a>
+      </p>
+    {% endif %}
+  </div>
+</nav>
