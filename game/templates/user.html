@@ -1,9 +1,23 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>{{user.username}}</h1>
+  <h1>{{ pageUser.username }}</h1>
   <p>
+    {% if user != None and user.username == pageUser.username %}
+      Email: {{user.email}} <i> only you can see this </i>
+    {% endif %}
+    <br>
     <!-- todo longest game, highest money -->
-    Current Money: {{ user.profile.money }}
+    Current Money: {{ pageUser.profile.money }}
+    <!-- todo games played -->
+
+    </br>
+
+    <!-- todo styling, down at bottom -->
+    {% if user != None and user.username == pageUser.username %}
+      <!-- todo confirm before pressing -->
+      <a type="button" class="btn btn-danger" href="#">Delete Your Account</a>
+      <a type="button" class="btn btn-primary" href="#">Edit Your Account</a>
+    {% endif %}
   </p>
 {% endblock %}

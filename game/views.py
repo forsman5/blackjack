@@ -14,7 +14,7 @@ def userPage(request, user_id):
         user = User.objects.get(pk=user_id)
     except User.DoesNotExist:
         raise Http404("User does not exist")
-    return render(request, 'user.html', {'user': user})
+    return render(request, 'user.html', {'pageUser': user})
 
 def register(request):
     if request.method == 'POST':
