@@ -2,7 +2,7 @@
 {% load static %}
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-fixed-top">
   <div class="container-fluid">
-     <a class="navbar-brand" href="/">
+     <a class="navbar-brand" href="{% url 'index' %}">
       <img src="{% static "images/ico_home.png" %}" alt="Let's Play Blackjack!" style="width:40px;">
     </a>
     <ul class="navbar-nav">
@@ -17,7 +17,12 @@
     {% if request.user.is_authenticated %}
       <p class="navbar-text navbar-right">
         Hello, <a class="navbar-link" href="#">{{ request.user.username }}</a>!
-        <a href="#" type="button" class="btn btn-primary">Sign Out</a>
+        <a href="{% url 'logout' %}" type="button" class="btn btn-primary">Sign Out</a>
+      </p>
+    {% else %}
+      <p class="navbar-text navbar-right">
+        <a type="button" class="btn btn-secondary" href="{% url 'login' %}">Log In</a>
+        <a type="button" class="btn btn-secondary" href="{% url 'register' %}">Sign Up</a>
       </p>
     {% endif %}
   </div>
