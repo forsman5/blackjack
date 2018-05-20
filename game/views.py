@@ -16,6 +16,13 @@ def userPage(request, user_id):
         raise Http404("User does not exist")
     return render(request, 'user.html', {'pageUser': user})
 
+def gamePage(request, game_uuid):
+    try:
+        game = Game.objects.get(pk=user_id)
+    except User.DoesNotExist:
+        raise Http404("Game not found")
+    return render(request, 'game.html', {'game': game})
+
 def register(request):
     if request.method == 'POST':
         # create and save a new username
