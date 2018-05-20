@@ -16,9 +16,11 @@ def userPage(request, user_id):
         raise Http404("User does not exist")
     return render(request, 'user.html', {'pageUser': user})
 
-def gamePage(request, game_uuid):
+def gamePage(request, game_id):
+    # TODO: Check if user signed in. Check if user can access this page
+
     try:
-        game = Game.objects.get(pk=user_id)
+        game = Game.objects.get(pk=game_id)
     except User.DoesNotExist:
         raise Http404("Game not found")
     return render(request, 'game.html', {'game': game})
