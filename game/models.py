@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from . import fields
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -58,6 +59,9 @@ class Hand(models.Model):
         return string
 
 class Game(models.Model):
+    # to prevent users from accessing this game in random post requests, this is random
+    id = models.BigIntegerField(default=fields.makeId, primary_key=True)
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     complete = models.BooleanField(default=False)
     dealer_hand = models.ForeignKey(Hand, on_delete=models.CASCADE, related_name='dealer_hand')
@@ -79,6 +83,15 @@ class Game(models.Model):
     def canSplit(self):
         return (len(self.player_hand.card_set) == 2 and self.player_hand.card_set[0].amount == self.player_hand.card_set[1].amount)
 
+    # return None if game is not over, true for player, false for dealer
+    def winner(self):
+        if not self.complete:
+            return None
+
+        # TODO: implement
+
+        # if player.isbust return false
+        # if dealer.isbust
 
 class Card(models.Model):
     SUITS = (
