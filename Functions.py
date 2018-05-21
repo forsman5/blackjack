@@ -6,16 +6,6 @@ VALUES = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
 userHand = []
 dealerHand = []
 
-def createDeck():
-    deck = []
-
-    for s in SUITS:
-        for v in VALUES:
-            deck.append({'suit': s, 'val': v})
-
-    random.shuffle(deck)
-    return deck
-
 def hit(deck, hand):                                     #Hand could be either user or dealer hand
     hand.append(deck.pop(0))
 

@@ -18,7 +18,7 @@ class Hand(models.Model):
     # Get as close to 21 as possible without going over, use aces to create this
     @property
     def value(self):
-        cards = self.card_set
+        cards = self.card_set.all()
         handValue = 0
         numAce = 0
 
@@ -49,7 +49,7 @@ class Hand(models.Model):
 
     # return true if this hand has blackjack
     def isBlackjack(self):
-        return (len(self.card_set) == 2 and self.value == 21)
+        return (self.card_set.count() == 2 and self.value == 21)
 
     # Create a new hand and its appropiate cards. Save them to the database.
     # This hand represents a full deck. Create this hand
@@ -79,7 +79,7 @@ class Hand(models.Model):
     def __str__(self):
         string = ""
 
-        for card in self.card_set:
+        for card in self.card_set.all():
             string += str(card)
 
         return string
@@ -98,16 +98,16 @@ class Game(models.Model):
 
     # return true if the player can double
     def canDouble(self):
-        return (len(self.player_hand.card_set) == 2 and self.player_hand.value >= 9 and self.player_hand.value <= 11)
+        return (self.player_hand.card_set.count() == 2 and self.player_hand.value >= 9 and self.player_hand.value <= 11)
 
     # return true if the player can insure against a possible dealer blackjack
     # Assumes the first card in the dealer card set is the only card shown to player
     def canInsure(self):
-        return (len(self.dealer_hand.card_set) == 2 and self.dealer_hand.card_set[0].amount == 'A')
+        return (self.dealer_hand.card_set.count() == 2 and self.dealer_hand.card_set.first().amount == 'A')
 
     # return true if the player can split
     def canSplit(self):
-        return (len(self.player_hand.card_set) == 2 and self.player_hand.card_set[0].amount == self.player_hand.card_set[1].amount)
+        return (self.player_hand.card_set.count() == 2 and self.player_hand.card_set.first().amount == self.player_hand.card_set.all()[1].amount)
 
     # return None if game is not over, true for player, false for dealer
     def winner(self):
