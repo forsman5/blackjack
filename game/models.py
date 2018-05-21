@@ -118,14 +118,21 @@ class Game(models.Model):
     deck = models.ForeignKey(Hand, on_delete=models.CASCADE, related_name='deck')
 
     def __str__(self):
-        return "Dealer: \n" + str(dealer_hand) + "\nPlayer: \n" + str(player_hand) + "\n"
+        return "Dealer: \n" + str(self.dealer_hand) + "\nPlayer: \n" + str(self.player_hand) + "\n"
 
     @classmethod
     def create(cls, user, bet):
-        game = cls(user=user, bet=bet)
+        deck = Hand.create_as_deck()
+        dealerHand = Hand.create_new_hand(deck)
+        playerHand = Hand.create_new_hand(deck)
+
+        game = cls(user=user, bet=bet, deck=deck, dealer_hand=dealerHand, player_hand=playerHand)
+
+        game.save()
 
         # remove bet from user
-        user.money -= bet
+        user.profile.money -= bet
+        user.save()
 
         return game
 
