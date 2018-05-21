@@ -10,20 +10,20 @@ def index(request):
     return render(request, 'index.html')
 
 def userPage(request, user_id):
-    try:
-        user = User.objects.get(pk=user_id)
-    except User.DoesNotExist:
-        raise Http404("User does not exist")
+    user = get_object_or_404(User, pk=user_id)
+
     return render(request, 'user.html', {'pageUser': user})
 
 def gamePage(request, game_id):
     # TODO: Check if user signed in. Check if user can access this page
 
-    try:
-        game = Game.objects.get(pk=game_id)
-    except User.DoesNotExist:
-        raise Http404("Game not found")
+    game = get_object_or_404(Game, pk=game_id)
+
     return render(request, 'game.html', {'game': game})
+
+def newGame(request):
+    # Create a new game
+    return HttpResponseRedirect('/game/' )#+ game.id)
 
 def register(request):
     if request.method == 'POST':
