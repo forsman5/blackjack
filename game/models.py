@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from . import fields
+import random
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -18,21 +19,21 @@ class Hand(models.Model):
     @property
     def value(self):
         cards = self.card_set
-        HandValue = 0
+        handValue = 0
         numAce = 0
 
         for card in card:
-            HandValue += card.value
+            handValue += card.value
 
             if card.amount == 'A':
                 numAce += 1
 
-        while HandValue > 21 and numAce > 0:
+        while handValue > 21 and numAce > 0:
 
-            HandValue -= 10
+            handValue -= 10
             numAce -= 1
 
-        return HandValue
+        return handValue
 
     # returns a string!
     # returns all possible values under 21 separated by slashes
@@ -49,6 +50,31 @@ class Hand(models.Model):
     # return true if this hand has blackjack
     def isBlackjack(self):
         return (len(self.card_set) == 2 and self.value == 21)
+
+    # Create a new hand and its appropiate cards. Save them to the database.
+    # This hand represents a full deck. Create this hand
+    @classmethod
+    def create_as_deck(cls):
+        deck = cls()
+        deck_temp = []
+
+        # is this okay?
+        deck.save()
+
+        for s in Card.SUITS:
+            for v in Card.VALUES:
+                card = Card(suit=s[0], amount=v[0])
+                card.hand = deck
+                deck_temp.append(card)
+
+        # once all objects are created, randomize the order
+        random.shuffle(deck_temp)
+
+        for card in deck_temp:
+            card.save()
+            deck.card_set.add(card)
+
+        return deck
 
     def __str__(self):
         string = ""
