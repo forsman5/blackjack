@@ -35,6 +35,15 @@ class Hand(models.Model):
 
         return handValue
 
+    # hit from the passed in deck, into this hand
+    def hit(self, deck):
+        card = deck.card_set.first()
+
+        # removes it from the deck, adds it to the hand
+        card.hand = self
+
+        card.save()
+
     # returns a string!
     # returns all possible values under 21 separated by slashes
     def getStringValue(self):
@@ -50,6 +59,19 @@ class Hand(models.Model):
     # return true if this hand has blackjack
     def isBlackjack(self):
         return (self.card_set.count() == 2 and self.value == 21)
+
+    # create and save to the database and return the new hand
+    # has a length of two cards
+    @classmethod
+    def create_new_hand(cls, deck):
+        hand = cls()
+        hand.save()
+
+        # draw and associate the new cards
+        hand.hit(deck)
+        hand.hit(deck)
+
+        return hand
 
     # Create a new hand and its appropiate cards. Save them to the database.
     # This hand represents a full deck. Create this hand
@@ -90,11 +112,27 @@ class Game(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     complete = models.BooleanField(default=False)
+    bet = models.IntegerField()
     dealer_hand = models.ForeignKey(Hand, on_delete=models.CASCADE, related_name='dealer_hand')
     player_hand = models.ForeignKey(Hand, on_delete=models.CASCADE, related_name='player_hand')
+    deck = models.ForeignKey(Hand, on_delete=models.CASCADE, related_name='deck')
 
     def __str__(self):
         return "Dealer: \n" + str(dealer_hand) + "\nPlayer: \n" + str(player_hand) + "\n"
+
+    @classmethod
+    def create(cls, user, bet):
+        game = cls(user=user, bet=bet)
+
+        # remove bet from user
+        user.money -= bet
+
+        return game
+
+    # finish the game. delete the deck. Mark game finished. Update money transactions
+    def finish(self):
+        # TODO: implement
+        pass
 
     # return true if the player can double
     def canDouble(self):
