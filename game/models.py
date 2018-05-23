@@ -161,15 +161,25 @@ class Game(models.Model):
     bet = models.IntegerField()
     dealer_hand = models.ForeignKey(Hand, on_delete=models.CASCADE, related_name='dealer_hand')
     player_hand = models.ForeignKey(Hand, on_delete=models.CASCADE, related_name='player_hand')
+    player_split_hand = models.ForeignKey(Hand, on_delete=models.CASCADE, related_name='player_split_hand', null=True, default=None)
     deck = models.ForeignKey(Hand, on_delete=models.CASCADE, related_name='deck', null=True)
+    time_started = models.DateTimeField(auto_now_add=True)
+    time_finished = models.DateTimeField(null=True, default=None)
+
+    # flags for user actions taken
+    has_doubled = models.BooleanField(default=False)
+    has_insured = models.BooleanField(default=False)
 
     # returns true if this game has been completed
     @property
     def complete(self):
+        # could also return self.time_finished == None
         return self.deck == None
 
-    def __str__(self):
-        return "Dealer: \n" + str(self.dealer_hand) + "\nPlayer: \n" + str(self.player_hand) + "\n"
+    # in keeping with the same style
+    @property
+    def has_split(self):
+        return self.player_split_hand == None
 
     @classmethod
     def create(cls, user, bet):
@@ -193,7 +203,7 @@ class Game(models.Model):
     #   Else, behave as normal
     #
     # Note: When game is initialized, the money for a bet is already removed from the user
-    def finish(self, forfeit):
+    def finish(self, forfeit = False):
         # TODO: implement
         if (forfeit == True):
             # Mark the game complete TODO
@@ -216,16 +226,56 @@ class Game(models.Model):
 
     # return true if the player can double
     def canDouble(self):
-        return (len(self.player_hand) == 2 and self.player_hand.value >= 9 and self.player_hand.value <= 11)
+        return (not self.has_doubled and len(self.player_hand) == 2 and self.player_hand.value >= 9 and self.player_hand.value <= 11)
 
     # return true if the player can insure against a possible dealer blackjack
     # Assumes the first card in the dealer card set is the only card shown to player
     def canInsure(self):
-        return (len(self.dealer_hand) == 2 and self.dealer_hand[0].amount == 'A')
+        return (not self.has_insured and len(self.dealer_hand) == 2 and self.dealer_hand[0].amount == 'A')
 
     # return true if the player can split
     def canSplit(self):
-        return (len(self.player_hand) == 2 and self.player_hand[0].amount == self.player_hand[1].amount)
+        return (not self.has_split and len(self.player_hand) == 2 and self.player_hand[0].amount == self.player_hand[1].amount)
+
+    # Split the hand on the table
+    def split(self):
+        # guard from improper usage
+        if not self.canSplit(): raise settings.GAME_ACTION_ERROR
+
+        self.player_split_hand = Hand.objects.create()
+
+        # move the second card over to the new hand
+        self.player_hand[1].hand = self.player_split_hand
+
+        self.player_hand.hit(self.deck)
+        self.player_split_hand.hit(self.deck)
+
+        # now both hands should have two cards, as intended
+
+        # TODO: implement
+        # change the bet?
+
+        self.save()
+
+    # The player insures
+    def insure(self):
+        # guard from improper usage
+        if not self.canInsure(): raise settings.GAME_ACTION_ERROR
+
+        self.has_insured = True
+
+        # TODO: implement
+
+        self.save()
+
+    # The player doubles their bet, hits once, and stands
+    # Must send the new cards back as a post response
+    def double(self):
+        # guard from improper usage
+        if not self.canDouble(): raise settings.GAME_ACTION_ERROR
+
+        # TODO: Sabrina - implement. Use split() for a bit of help
+        pass
 
     # return None if game is not over, true for player, false for dealer
     def winner(self):
@@ -236,6 +286,9 @@ class Game(models.Model):
 
         # if player.isbust return false
         # if dealer.isbust
+
+    def __str__(self):
+        return "Dealer: \n" + str(self.dealer_hand) + "\nPlayer: \n" + str(self.player_hand) + "\n"
 
 class Card(models.Model):
     SUITS = (

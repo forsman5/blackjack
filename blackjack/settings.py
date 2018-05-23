@@ -133,3 +133,4 @@ VALUE_SEPARATOR = ' / '
 # Error Messages
 # This is used to ensure that the user is not misusing a deck
 DECK_ACCESS_ERROR = TypeError('Attempting to access hand methods on a deck!')
+GAME_ACTION_ERROR = AttributeError('This game cannot take that action!')
