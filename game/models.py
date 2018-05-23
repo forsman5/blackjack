@@ -37,7 +37,7 @@ class Hand(models.Model):
 
     # hit from the passed in deck, into this hand
     def hit(self, deck):
-        card = deck.card_set.first()
+        card = deck[0]
 
         # removes it from the deck, adds it to the hand
         card.hand = self
@@ -58,7 +58,7 @@ class Hand(models.Model):
 
     # return true if this hand has blackjack
     def isBlackjack(self):
-        return (self.card_set.count() == 2 and self.value == 21)
+        return (len(self) == 2 and self.value == 21)
 
     # create and save to the database and return the new hand
     # has a length of two cards
@@ -93,14 +93,29 @@ class Hand(models.Model):
 
         for card in deck_temp:
             card.save()
-            deck.card_set.add(card)
+            deck.add(card)
 
         return deck
+
+    # helper methods to bypass call to .card_set
+    def add(self, item):
+        self.card_set.add(item)
+
+    def remove(self, item):
+        self.card_set.remove(item)
+
+    # as a hand is just a set of cards, when attempting to index the hand, grab the cards directly
+    def __getitem__(self, key):
+        return self.card_set.all()[key]
+
+    # to reduce the amount of calls to hand.card_set
+    def __len__(self):
+        return self.card_set.count()
 
     def __str__(self):
         string = ""
 
-        for card in self.card_set.all():
+        for card in self:
             string += str(card) + " "
 
         return string
@@ -167,16 +182,16 @@ class Game(models.Model):
 
     # return true if the player can double
     def canDouble(self):
-        return (self.player_hand.card_set.count() == 2 and self.player_hand.value >= 9 and self.player_hand.value <= 11)
+        return (len(self.player_hand) == 2 and self.player_hand.value >= 9 and self.player_hand.value <= 11)
 
     # return true if the player can insure against a possible dealer blackjack
     # Assumes the first card in the dealer card set is the only card shown to player
     def canInsure(self):
-        return (self.dealer_hand.card_set.count() == 2 and self.dealer_hand.card_set.first().amount == 'A')
+        return (len(self.dealer_hand) == 2 and self.dealer_hand[0].amount == 'A')
 
     # return true if the player can split
     def canSplit(self):
-        return (self.player_hand.card_set.count() == 2 and self.player_hand.card_set.first().amount == self.player_hand.card_set.all()[1].amount)
+        return (len(self.player_hand) == 2 and self.player_hand[0].amount == self.player_hand[1].amount)
 
     # return None if game is not over, true for player, false for dealer
     def winner(self):
