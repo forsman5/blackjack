@@ -195,6 +195,10 @@ class Game(models.Model):
         user.profile.money -= bet
         user.save()
 
+        # check for blackjack here!
+        if game.player_hand.isBlackjack():
+            game.finish()
+
         return game
 
     # finish the game. delete the deck. Mark game finished. Update money transactions
@@ -209,20 +213,35 @@ class Game(models.Model):
             # Mark the game complete TODO
             pass
         else:
-            # determine if the game is can be completed
-            if (gameComplete == True): # TODO
+            # Unattach the deck, ending the game
+            self.deck.delete()  # remove from the database
+            self.deck = None
+
+            # TODO: Handle splits
+
+            # check for the base cases first
+            if (self.player_hand.isBlackjack()):
+                pass
+            elif (self.player_hand.isBust()):
+                pass
+            elif (self.dealer_hand.isBlackjack()):
                 pass
             else:
-                # Unattach the deck, ending the game
-                self.deck.delete()  # remove from the database
-                self.deck = None
-                winner = self.winner()
+                self.processDealerLogic()
 
-                if (winner == 1): # TODO: If winner is player. What does winner() return in this case??
+                if (self.dealer_hand.isBust()):
                     pass
                 else:
-                    # Dealer wins
-                    pass
+                    winner = self.winner()
+
+                    if (winner == 1): # TODO: If winner is player. What does winner() return in this case??
+                        pass
+                    else:
+                        # Dealer wins
+                        pass
+
+        self.save()
+        self.user.save()
 
     # return true if the player can double
     def canDouble(self):
@@ -286,6 +305,15 @@ class Game(models.Model):
 
         # if player.isbust return false
         # if dealer.isbust
+
+    # the player has stood. Now, the dealer's turn
+    def processDealerLogic(self):
+        # ensure this is being called at the right time
+        if (self.player_hand.isBust() or self.player_hand.isBlackjack()):
+            raise settings.GAME_ACTION_ERROR
+
+        while self.dealer_hand.value <= 16:
+            self.dealer_hand.hit(self.deck)
 
     def __str__(self):
         return "Dealer: \n" + str(self.dealer_hand) + "\nPlayer: \n" + str(self.player_hand) + "\n"
