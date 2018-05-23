@@ -74,19 +74,22 @@ class Hand(models.Model):
         return hand
 
     # Create a new hand and its appropiate cards. Save them to the database.
-    # This hand represents a full deck. Create this hand
+    # This hand represents a full, shuffled deck. Create this hand
+    # decks parameter represents the number of full normal card decks to be returned.
+    #   ie, if decks = 2, this will return two decks shuffled together
     @classmethod
-    def create_new_deck(cls):
+    def create_new_deck(cls, decks = 1):
         deck = cls()
         deck_temp = []
 
         deck.save()
 
-        for s in Card.SUITS:
-            for v in Card.VALUES:
-                card = Card(suit=s[0], amount=v[0])
-                card.hand = deck
-                deck_temp.append(card)
+        for i in range(0, decks):
+            for s in Card.SUITS:
+                for v in Card.VALUES:
+                    card = Card(suit=s[0], amount=v[0])
+                    card.hand = deck
+                    deck_temp.append(card)
 
         # once all objects are created, randomize the order
         random.shuffle(deck_temp)
@@ -171,6 +174,7 @@ class Game(models.Model):
                 pass
             else:
                 # Unattach the deck, ending the game
+                self.deck.delete()  # remove from the database
                 self.deck = None
                 winner = self.winner()
 
