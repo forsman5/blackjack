@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django import forms
 from .forms import UserRegistrationForm
@@ -21,9 +22,18 @@ def gamePage(request, game_id):
 
     return render(request, 'game.html', {'game': game})
 
+@login_required(login_url='login')
 def newGame(request):
-    # Create a new game
-    return HttpResponseRedirect('/game/' )#+ game.id)
+    if request.method == 'POST':
+        # this is requesting a new game is started, with parameters
+        gm = Game.objects.create() # TODO: parameters.. user and bet
+
+        # Create a new game
+        return HttpResponseRedirect('/game/' + str(gm.id))
+    else:
+        # this is a get request to the page to start a game
+        # must be logged in to see this
+        return render(request, 'startGame.html')
 
 def register(request):
     if request.method == 'POST':
