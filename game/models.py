@@ -30,7 +30,7 @@ class Hand(models.Model):
         if self.is_deck: raise settings.DECK_ACCESS_ERROR
 
         # Return simply the highest possible of getStringValue
-        return int(self.getStringValue().split(settings.VALUE_SEPARATOR)[0])
+        return int(self.string_value.split(settings.VALUE_SEPARATOR)[0])
 
     # hit from the passed in deck, into this hand
     def hit(self, deck):
@@ -47,7 +47,8 @@ class Hand(models.Model):
     # returns a string!
     # returns all possible values under 21 separated by slashes (settings.VALUE_SEPARATOR)
     # The highest (best) current possible value is the first value in the string
-    def getStringValue(self):
+    @property
+    def string_value(self):
         # forbidden for decks
         if self.is_deck: raise settings.DECK_ACCESS_ERROR
 
@@ -148,7 +149,7 @@ class Hand(models.Model):
             string += str(card) + " "
 
         if not self.is_deck:
-            string += '\nValue: ' + str(self.getStringValue())
+            string += '\nValue: ' + str(self.string_value)
 
         return string
 
