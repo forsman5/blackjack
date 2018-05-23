@@ -141,9 +141,30 @@ class Game(models.Model):
         return game
 
     # finish the game. delete the deck. Mark game finished. Update money transactions
-    def finish(self):
+    # If the game cannot be finished, ie, a winner has not yet been decided, return False
+    # If the forfeit parameter is true, disregard any other logic and end the game in a player loss
+    #   Else, behave as normal
+    #
+    # Note: When game is initialized, the money for a bet is already removed from the user
+    def finish(self, forfeit):
         # TODO: implement
-        pass
+        if (forfeit == True):
+            # Mark the game complete TODO
+            pass
+        else:
+            # determine if the game is can be completed
+            if (gameComplete == True): # TODO
+                pass
+            else:
+                # Unattach the deck, ending the game
+                self.deck = None
+                winner = self.winner()
+
+                if (winner == 1): # TODO: If winner is player. What does winner() return in this case??
+                    pass
+                else:
+                    # Dealer wins
+                    pass
 
     # return true if the player can double
     def canDouble(self):
