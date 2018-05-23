@@ -3,7 +3,12 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from . import fields
+
+# for deck shuffle
 import random
+
+# for end - user defined settings
+from django.conf import settings
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -36,14 +41,14 @@ class Hand(models.Model):
             handValue -= 10
             numAce -= 1
         # forbidden for decks
-        if self.is_deck: raise DECK_ACCESS_ERROR
+        if self.is_deck: raise settings.DECK_ACCESS_ERROR
 
         return handValue
 
     # hit from the passed in deck, into this hand
     def hit(self, deck):
         # forbidden for decks
-        if self.is_deck: raise DECK_ACCESS_ERROR
+        if self.is_deck: raise settings.DECK_ACCESS_ERROR
 
         card = deck[0]
 
@@ -59,12 +64,12 @@ class Hand(models.Model):
         # i recommend you split out a new function to calculate number of aces
         return "17 / 7"
         # forbidden for decks
-        if self.is_deck: raise DECK_ACCESS_ERROR
+        if self.is_deck: raise settings.DECK_ACCESS_ERROR
 
     # utility models
     def isBust(self):
         # forbidden for decks
-        if self.is_deck: raise DECK_ACCESS_ERROR
+        if self.is_deck: raise settings.DECK_ACCESS_ERROR
 
         # returns true if this hand is bust, false otherwise
         return self.value > 21
@@ -72,7 +77,7 @@ class Hand(models.Model):
     # return true if this hand has blackjack
     def isBlackjack(self):
         # forbidden for decks
-        if self.is_deck: raise DECK_ACCESS_ERROR
+        if self.is_deck: raise settings.DECK_ACCESS_ERROR
 
         return (len(self) == 2 and self.value == 21)
 
@@ -95,7 +100,7 @@ class Hand(models.Model):
     #   ie, if decks = 2, this will return two decks shuffled together
     @classmethod
     def create_new_deck(cls, decks = 1):
-        deck = cls(deck = True)
+        deck = cls(is_deck = True)
         deck_temp = []
 
         deck.save()
