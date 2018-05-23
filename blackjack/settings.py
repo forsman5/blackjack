@@ -28,9 +28,6 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -82,9 +79,6 @@ DATABASES = {
     }
 }
 
-# SABRINA TODO
-# CARD_FILE_LOC = "images/cards/"
-
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
@@ -122,3 +116,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# End User Defined Settings
+# SABRINA TODO
+# CARD_FILE_LOC = "images/cards/"
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+# Error Messages
+# This is used to ensure that the user is not misusing a deck
+DECK_ACCESS_ERROR = TypeError('Attempting to access hand methods on a deck!')

@@ -14,6 +14,9 @@ class Profile(models.Model):
         return self.user.email
 
 class Hand(models.Model):
+    # this sets if this is a deck. if this is true, forbid certain actions
+    is_deck = models.BooleanField(default = False)
+
     # Sum of the value of each of the cards in this hand
     # Get as close to 21 as possible without going over, use aces to create this
     @property
@@ -32,11 +35,16 @@ class Hand(models.Model):
 
             handValue -= 10
             numAce -= 1
+        # forbidden for decks
+        if self.is_deck: raise DECK_ACCESS_ERROR
 
         return handValue
 
     # hit from the passed in deck, into this hand
     def hit(self, deck):
+        # forbidden for decks
+        if self.is_deck: raise DECK_ACCESS_ERROR
+
         card = deck[0]
 
         # removes it from the deck, adds it to the hand
@@ -50,14 +58,22 @@ class Hand(models.Model):
         # TODO: implement this
         # i recommend you split out a new function to calculate number of aces
         return "17 / 7"
+        # forbidden for decks
+        if self.is_deck: raise DECK_ACCESS_ERROR
 
     # utility models
     def isBust(self):
+        # forbidden for decks
+        if self.is_deck: raise DECK_ACCESS_ERROR
+
         # returns true if this hand is bust, false otherwise
         return self.value > 21
 
     # return true if this hand has blackjack
     def isBlackjack(self):
+        # forbidden for decks
+        if self.is_deck: raise DECK_ACCESS_ERROR
+
         return (len(self) == 2 and self.value == 21)
 
     # create and save to the database and return the new hand
@@ -79,7 +95,7 @@ class Hand(models.Model):
     #   ie, if decks = 2, this will return two decks shuffled together
     @classmethod
     def create_new_deck(cls, decks = 1):
-        deck = cls()
+        deck = cls(deck = True)
         deck_temp = []
 
         deck.save()
@@ -116,7 +132,7 @@ class Hand(models.Model):
         return self.card_set.count()
 
     def __str__(self):
-        string = ""
+        string = "Deck: " + self.is_deck + "\n"
 
         for card in self:
             string += str(card) + " "
