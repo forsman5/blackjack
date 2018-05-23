@@ -2,15 +2,7 @@
 
 {% block content %}
   <h1>Game in Progress...</h1>
-  <table>
-    <th>
-    </th>
-    <p>{{ game.dealerHand.getStringValue() }}</p>
-  </table>
-
-  {% for card in cards %}
-    <image ... href = "{{ static card.filename }}">
-  {% end for %}
+  {# Render the two hand partials here #}
 
   <button type="button" class="btn btn-primary {% if not game.canInsure() %} btn-disabled {% end if %}">Insure</button>
 

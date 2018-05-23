@@ -24,8 +24,8 @@ def gamePage(request, game_id):
 
     if game.user != request.user:
         # this is not the user's game
-        # TODO: notify the user that he cannot access that page 
-        return HttpResponseRedirect(reverse_lazy('user' args=(request.user.id,)))
+        # TODO: notify the user that he cannot access that page
+        return HttpResponseRedirect(reverse_lazy('user', args=(request.user.id,)))
 
     return render(request, 'game.html', {'game': game})
 
