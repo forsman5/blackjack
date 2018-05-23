@@ -102,7 +102,7 @@ class Hand(models.Model):
         string = ""
 
         for card in self.card_set.all():
-            string += str(card)
+            string += str(card) + " "
 
         return string
 
@@ -111,11 +111,15 @@ class Game(models.Model):
     id = models.BigIntegerField(default=fields.makeId, primary_key=True)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    complete = models.BooleanField(default=False)
     bet = models.IntegerField()
     dealer_hand = models.ForeignKey(Hand, on_delete=models.CASCADE, related_name='dealer_hand')
     player_hand = models.ForeignKey(Hand, on_delete=models.CASCADE, related_name='player_hand')
-    deck = models.ForeignKey(Hand, on_delete=models.CASCADE, related_name='deck')
+    deck = models.ForeignKey(Hand, on_delete=models.CASCADE, related_name='deck', null=True)
+
+    # returns true if this game has been completed
+    @property
+    def complete(self):
+        return self.deck == None
 
     def __str__(self):
         return "Dealer: \n" + str(self.dealer_hand) + "\nPlayer: \n" + str(self.player_hand) + "\n"
