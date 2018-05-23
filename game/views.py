@@ -1,8 +1,10 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
+from django.urls import reverse_lazy
 from django import forms
 from .forms import UserRegistrationForm, GameStartForm
 from .models import Game
@@ -16,10 +18,14 @@ def userPage(request, user_id):
 
     return render(request, 'user.html', {'pageUser': user})
 
+@login_required(login_url='login')
 def gamePage(request, game_id):
-    # TODO: Check if user signed in. Check if user can access this page
-
     game = get_object_or_404(Game, pk=game_id)
+
+    if game.user != request.user:
+        # this is not the user's game
+        # TODO: notify the user that he cannot access that page 
+        return HttpResponseRedirect(reverse_lazy('user' args=(request.user.id,)))
 
     return render(request, 'game.html', {'game': game})
 
@@ -37,10 +43,7 @@ def newGame(request):
                 # this is requesting a new game is started, with parameters
                 gm = Game.create(user = request.user, bet = bet)
 
-                return HttpResponseRedirect('/games/' + str(gm.id))
-
-        # Create a new game
-        return HttpResponseRedirect('/game/' + str(gm.id))
+                return HttpResponseRedirect(reverse_lazy('gamePage', args=(gm.id,)))
     else:
         # this is a get request to the page to start a game
         # must be logged in to see this
@@ -48,11 +51,20 @@ def newGame(request):
 
     return render(request, 'startGame.html', {'form': form})
 
-# TODO: Use this to ensure logged - in users cannot see the log in form
+# This is used to ensure that logged in users cannot see this page
 def loggedin_check(request):
-    pass
+    if request.user != None and request.user.is_authenticated:
+        # TODO: notify the user that he cannot access that page when logged in
+        return HttpResponseRedirect(reverse_lazy('index'))
+    else:
+        return auth_views.login(request, template_name='login.html')
 
 def register(request):
+    # ensure that logged in users cannot see this page
+    if request.user != None and request.user.is_authenticated:
+        # TODO: notify the user that he cannot access that page when logged in
+        return HttpResponseRedirect(reverse_lazy('index'))
+
     if request.method == 'POST':
         # create and save a new username
         form = UserRegistrationForm(request.POST)
@@ -69,7 +81,7 @@ def register(request):
 
                 login(request, user)
 
-                return HttpResponseRedirect('/')
+                return HttpResponseRedirect(reverse_lazy('index'))
             else:
                 raise forms.ValidationError('Looks like that username is already in use')
     else:
