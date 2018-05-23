@@ -76,11 +76,10 @@ class Hand(models.Model):
     # Create a new hand and its appropiate cards. Save them to the database.
     # This hand represents a full deck. Create this hand
     @classmethod
-    def create_as_deck(cls):
+    def create_new_deck(cls):
         deck = cls()
         deck_temp = []
 
-        # is this okay?
         deck.save()
 
         for s in Card.SUITS:
@@ -126,7 +125,7 @@ class Game(models.Model):
 
     @classmethod
     def create(cls, user, bet):
-        deck = Hand.create_as_deck()
+        deck = Hand.create_new_deck()
         dealerHand = Hand.create_new_hand(deck)
         playerHand = Hand.create_new_hand(deck)
 
