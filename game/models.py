@@ -29,9 +29,6 @@ class Hand(models.Model):
     # Get as close to 21 as possible without going over, use aces to create this
     @property
     def value(self):
-        # forbidden for decks
-        if self.is_deck: raise settings.DECK_ACCESS_ERROR
-
         # Return simply the highest possible of getStringValue
         return int(self.string_value.split(settings.VALUE_SEPARATOR)[0])
 
@@ -167,10 +164,13 @@ class Hand(models.Model):
         return self.card_set.count()
 
     def __str__(self):
-        string = "Deck: " + str(self.is_deck) + "\n"
+        string = 'Deck: ' + str(self.is_deck) + '\n'
+
+        if not self.standing == None:
+            string += 'Standing: ' + str(self.standing)
 
         for card in self:
-            string += str(card) + " "
+            string += str(card) + ' '
 
         if not self.is_deck:
             string += '\nValue: ' + str(self.string_value)

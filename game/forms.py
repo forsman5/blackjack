@@ -17,3 +17,10 @@ class UserRegistrationForm(forms.Form):
         max_length = 32,
         widget = forms.PasswordInput()
     )
+
+class GameStartForm(forms.Form):
+    bet = forms.IntegerField(
+        min_value = 0,
+        required = True,
+        label = 'Bet'
+    )

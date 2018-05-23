@@ -1,10 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django import forms
-from .forms import UserRegistrationForm
+from .forms import UserRegistrationForm, GameStartForm
+from .models import Game
 
 def index(request):
     # the homepage
@@ -25,15 +26,31 @@ def gamePage(request, game_id):
 @login_required(login_url='login')
 def newGame(request):
     if request.method == 'POST':
-        # this is requesting a new game is started, with parameters
-        gm = Game.objects.create() # TODO: parameters.. user and bet
+        form = GameStartForm(request.POST)
+        if (form.is_valid()):
+            bet = form.cleaned_data['bet']
+
+            if bet > request.user.profile.money:
+                # can't afford this game
+                raise forms.ValidationError('You don\'t have that much money in your account!')
+            else:
+                # this is requesting a new game is started, with parameters
+                gm = Game.create(user = request.user, bet = bet)
+
+                return HttpResponseRedirect('/games/' + str(gm.id))
 
         # Create a new game
         return HttpResponseRedirect('/game/' + str(gm.id))
     else:
         # this is a get request to the page to start a game
         # must be logged in to see this
-        return render(request, 'startGame.html')
+        form = GameStartForm()
+
+    return render(request, 'startGame.html', {'form': form})
+
+# TODO: Use this to ensure logged - in users cannot see the log in form
+def loggedin_check(request):
+    pass
 
 def register(request):
     if request.method == 'POST':

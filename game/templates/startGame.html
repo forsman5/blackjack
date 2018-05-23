@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{# this is the form for a new game #}
+
+{% block content %}
+<h1> Get Ready to Play Blackjack!</h1>
+
+<form method="POST">
+    {% csrf_token %} {{ form.as_p }}
+    <button type="submit">Play Game</button>
+</form>
+{% endblock %}
