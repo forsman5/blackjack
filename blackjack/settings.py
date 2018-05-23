@@ -124,6 +124,9 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
+# Number of decks to be used when playing a single round
+DECK_SIZE = 1
+
 # Error Messages
 # This is used to ensure that the user is not misusing a deck
 DECK_ACCESS_ERROR = TypeError('Attempting to access hand methods on a deck!')

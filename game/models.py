@@ -137,10 +137,13 @@ class Hand(models.Model):
         return self.card_set.count()
 
     def __str__(self):
-        string = "Deck: " + self.is_deck + "\n"
+        string = "Deck: " + str(self.is_deck) + "\n"
 
         for card in self:
             string += str(card) + " "
+
+        if not self.is_deck:
+            string += '\nValue: ' + str(self.getStringValue())
 
         return string
 
@@ -164,7 +167,7 @@ class Game(models.Model):
 
     @classmethod
     def create(cls, user, bet):
-        deck = Hand.create_new_deck()
+        deck = Hand.create_new_deck(settings.DECK_SIZE)
         dealerHand = Hand.create_new_hand(deck)
         playerHand = Hand.create_new_hand(deck)
 
