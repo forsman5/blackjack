@@ -127,6 +127,9 @@ LOGOUT_REDIRECT_URL = '/'
 # Number of decks to be used when playing a single round
 DECK_SIZE = 1
 
+# What the values are split by when displaying value of a hand
+VALUE_SEPARATOR = ' / '
+
 # Error Messages
 # This is used to ensure that the user is not misusing a deck
 DECK_ACCESS_ERROR = TypeError('Attempting to access hand methods on a deck!')

@@ -26,24 +26,11 @@ class Hand(models.Model):
     # Get as close to 21 as possible without going over, use aces to create this
     @property
     def value(self):
-        cards = self.card_set.all()
-        handValue = 0
-        numAce = 0
-
-        for card in card:
-            handValue += card.value
-
-            if card.amount == 'A':
-                numAce += 1
-
-        while handValue > 21 and numAce > 0:
-
-            handValue -= 10
-            numAce -= 1
         # forbidden for decks
         if self.is_deck: raise settings.DECK_ACCESS_ERROR
 
-        return handValue
+        # Return simply the highest possible of getStringValue
+        return int(self.getStringValue().split(settings.VALUE_SEPARATOR)[0])
 
     # hit from the passed in deck, into this hand
     def hit(self, deck):
@@ -58,13 +45,31 @@ class Hand(models.Model):
         card.save()
 
     # returns a string!
-    # returns all possible values under 21 separated by slashes
+    # returns all possible values under 21 separated by slashes (settings.VALUE_SEPARATOR)
+    # The highest (best) current possible value is the first value in the string
     def getStringValue(self):
-        # TODO: implement this
-        # i recommend you split out a new function to calculate number of aces
-        return "17 / 7"
         # forbidden for decks
         if self.is_deck: raise settings.DECK_ACCESS_ERROR
+
+        numAce, handValue = 0, 0
+
+        for card in self:
+            handValue += card.value
+
+            if card.amount == 'A':
+                numAce += 1
+
+        valueArr = [handValue]
+
+        while numAce > 0:
+            handValue -= 10
+            numAce -= 1
+            valueArr.append(handValue)
+
+        filteredArr = [str(val) for val in valueArr if val <= 21]
+
+        # filter the list to only values less than 22
+        return settings.VALUE_SEPARATOR.join(filteredArr) if len(filteredArr) > 0 else str(min(valueArr))
 
     # utility models
     def isBust(self):
