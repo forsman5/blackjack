@@ -22,6 +22,9 @@ class Hand(models.Model):
     # this sets if this is a deck. if this is true, forbid certain actions
     is_deck = models.BooleanField(default = False)
 
+    # this sets if the hand is standing. If this is None, this is a deck
+    standing = models.NullBooleanField(default = False)
+
     # Sum of the value of each of the cards in this hand
     # Get as close to 21 as possible without going over, use aces to create this
     @property
@@ -31,18 +34,6 @@ class Hand(models.Model):
 
         # Return simply the highest possible of getStringValue
         return int(self.string_value.split(settings.VALUE_SEPARATOR)[0])
-
-    # hit from the passed in deck, into this hand
-    def hit(self, deck):
-        # forbidden for decks
-        if self.is_deck: raise settings.DECK_ACCESS_ERROR
-
-        card = deck[0]
-
-        # removes it from the deck, adds it to the hand
-        card.hand = self
-
-        card.save()
 
     # returns a string!
     # returns all possible values under 21 separated by slashes (settings.VALUE_SEPARATOR)
@@ -72,6 +63,27 @@ class Hand(models.Model):
         # filter the list to only values less than 22
         return settings.VALUE_SEPARATOR.join(filteredArr) if len(filteredArr) > 0 else str(min(valueArr))
 
+    # hit from the passed in deck, into this hand
+    def hit(self, deck):
+        # forbidden for decks
+        if self.is_deck: raise settings.DECK_ACCESS_ERROR
+
+        # ensure that this action is only taken when it can be
+        # this is to prevent players from spoofing ajax requests to see cards
+        #   and then acting with that knowledge. Can't get the second card until you have stood
+        if self.standing or self.isBlackjack() or self.isBust(): raise settings.GAME_ACTION_ERROR
+
+        card = deck[0]
+
+        # removes it from the deck, adds it to the hand
+        card.hand = self
+
+        # must stand if either of these are true
+        if self.value == 21 or self.isBust():
+            self.stand()
+
+        card.save()
+
     # utility models
     def isBust(self):
         # forbidden for decks
@@ -87,6 +99,15 @@ class Hand(models.Model):
 
         return (len(self) == 2 and self.value == 21)
 
+    # quick helper method to have a hand stand
+    def stand(self):
+        # ensure this is only being called at the right time
+        if self.is_deck: raise settings.DECK_ACCESS_ERROR
+        if self.standing: raise settings.GAME_ACTION_ERROR
+
+        self.standing = True
+        self.save()
+
     # create and save to the database and return the new hand
     # has a length of two cards
     @classmethod
@@ -98,6 +119,9 @@ class Hand(models.Model):
         hand.hit(deck)
         hand.hit(deck)
 
+        if hand.isBlackjack():
+            hand.stand()
+
         return hand
 
     # Create a new hand and its appropiate cards. Save them to the database.
@@ -106,7 +130,7 @@ class Hand(models.Model):
     #   ie, if decks = 2, this will return two decks shuffled together
     @classmethod
     def create_new_deck(cls, decks = 1):
-        deck = cls(is_deck = True)
+        deck = cls(is_deck = True, standing=None)
         deck_temp = []
 
         deck.save()
@@ -213,6 +237,9 @@ class Game(models.Model):
             # Mark the game complete TODO
             pass
         else:
+            # cannot finish before the player has stood
+            if not self.player_hand.standing: raise settings.GAME_ACTION_ERROR
+
             # Unattach the deck, ending the game
             self.deck.delete()  # remove from the database
             self.deck = None
@@ -309,11 +336,13 @@ class Game(models.Model):
     # the player has stood. Now, the dealer's turn
     def processDealerLogic(self):
         # ensure this is being called at the right time
-        if (self.player_hand.isBust() or self.player_hand.isBlackjack()):
+        if (not self.player_hand.standing or self.player_hand.isBust() or self.player_hand.isBlackjack()):
             raise settings.GAME_ACTION_ERROR
 
         while self.dealer_hand.value <= 16:
             self.dealer_hand.hit(self.deck)
+
+        self.dealer_hand.stand()
 
     def __str__(self):
         return "Dealer: \n" + str(self.dealer_hand) + "\nPlayer: \n" + str(self.player_hand) + "\n"
