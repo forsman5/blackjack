@@ -3,10 +3,14 @@
 {# this is the form for a new game #}
 
 {% block content %}
-<h1> Get Ready to Play Blackjack!</h1>
+<div class="panel-heading display-2"> Get Ready to Play Blackjack!</div>
 
-<form method="POST">
-    {% csrf_token %} {{ form.as_p }}
-    <button type="submit">Play Game</button>
-</form>
+<br><br>
+
+<div class="panel-body">
+  <form method="POST">
+      {% csrf_token %} {{ form.as_p }}
+      <button type="submit">Play Game</button>
+  </form>
+</div>
 {% endblock %}
