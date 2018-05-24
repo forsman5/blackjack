@@ -15,6 +15,12 @@ class Profile(models.Model):
     money = models.IntegerField(default=2500)
     email_confirmed = models.BooleanField(default=False)
 
+    # return a queryset of all games this user has not yet completed
+    @property
+    def unfinished_games(self):
+        # TODO: Implement
+        pass
+
     def __str__(self):
         return self.user.email
 

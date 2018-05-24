@@ -130,6 +130,9 @@ DECK_SIZE = 1
 # What the values are split by when displaying value of a hand
 VALUE_SEPARATOR = ' / '
 
+# Number of users on the Leaderboard
+LEADERBOARD_SIZE = 50
+
 # Error Messages
 # This is used to ensure that the user is not misusing a deck
 DECK_ACCESS_ERROR = TypeError('Attempting to access hand methods on a deck!')

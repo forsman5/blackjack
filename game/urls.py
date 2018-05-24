@@ -12,4 +12,5 @@ urlpatterns = [
     path('users/<int:user_id>', views.userPage, name='userPage'),
     path('games/<int:game_id>', views.gamePage, name='gamePage'),
     path('games/new', views.newGame, name='newGame'),
+    path('leaderboard', views.leaderboard, name='leaderboard'),
 ]

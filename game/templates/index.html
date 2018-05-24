@@ -2,10 +2,13 @@
 
 {% block content %}
   <div class="panel-heading display-1">Let's Play Blackjack!</div>
-    {% if not request.user.is_authenticated %}
-      <div class="panel-body">
-        <a type="button" class="btn btn-outline-success" href="{% url 'login' %}">Log In</a>
-        <a type="button" class="btn btn-outline-secondary" href="{% url 'register' %}">Sign Up</a>
-      </div>
-    {% endif %}
+
+  <br><br>
+
+  {% if not request.user.is_authenticated %}
+    <div class="panel-body">
+      <a type="button" class="btn btn-outline-success" href="{% url 'login' %}">Log In</a>
+      <a type="button" class="btn btn-outline-secondary" href="{% url 'register' %}">Sign Up</a>
+    </div>
+  {% endif %}
 {% endblock %}

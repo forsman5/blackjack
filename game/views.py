@@ -7,7 +7,10 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django import forms
 from .forms import UserRegistrationForm, GameStartForm
-from .models import Game
+from .models import Game, Profile
+
+# for end - user defined settings
+from django.conf import settings
 
 def index(request):
     # the homepage
@@ -17,6 +20,11 @@ def userPage(request, user_id):
     user = get_object_or_404(User, pk=user_id)
 
     return render(request, 'user.html', {'pageUser': user})
+
+def leaderboard(request):
+    profiles = Profile.objects.order_by('money')[:settings.LEADERBOARD_SIZE]
+
+    return render(request, 'leaderboard.html', {'profiles': profiles})
 
 @login_required(login_url='login')
 def gamePage(request, game_id):

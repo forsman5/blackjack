@@ -4,6 +4,6 @@
   <div class="panel-heading display-3">Game in Progress...</div>
   {# Render the two hand partials here #}
 
-  <button type="button" class="btn btn-primary {% if not game.canInsure() %} btn-disabled {% end if %}">Insure</button>
+  <button type="button" class="btn btn-primary {% if not game.canInsure %} btn-disabled {% endif %}">Insure</button>
 
 {% endblock %}

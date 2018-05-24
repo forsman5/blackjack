@@ -6,4 +6,23 @@ body {
   -o-background-size: cover;
 }
 
-.main-box { padding-top: 70px; }
+.main-box {
+  padding-top: 70px;
+  padding-bottom: 50px;
+
+  /* rounded edges */
+  border-radius: 25px;
+
+  width: 65%;
+  margin: auto;
+}
+
+.opaque {
+  opacity: .85;
+}
+
+.leaderboard-box {
+  width: 35%;
+  padding-right: 100px;
+  padding-left: 100px;
+}

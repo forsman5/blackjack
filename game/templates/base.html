@@ -23,10 +23,13 @@
 
     {% include 'partials/_header.html' %}
 
-    <div class="panel main-box" align="center">
+
+    {# Only give content for non-game pages #}
+    {# if the variable "game" is passed #}
+    <div class="panel panel-default main-box {% if not game %} bg-light opaque {% endif %}" align="center">
       {% block content %}{% endblock %}
     </div>
-
+  
     {% include 'partials/_footer.html' %}
   </body>
 </html>
