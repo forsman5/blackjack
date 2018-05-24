@@ -15,7 +15,7 @@
       {% for profile in profiles %}
         <tr>
           <td>{{ forloop.counter }}</td>
-          <td>{{ profile.user.username }}</td>
+          <td>{{ profile.user.username }}</td> <!-- TODO: Link to -->
           <td>{{ profile.money }}</td>
         </tr>
       {% endfor %}

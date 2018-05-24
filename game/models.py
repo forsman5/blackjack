@@ -18,8 +18,10 @@ class Profile(models.Model):
     # return a queryset of all games this user has not yet completed
     @property
     def unfinished_games(self):
-        # TODO: Implement
-        pass
+        # Cannot filter on property!
+        # thus, the condiition inside of this filter is reflective of the game.complete property
+        # this cannot be done because it would require the loading of the django object, instead of generating sql
+        return Game.objects.filter(user=self.user).exclude(deck__isnull=True)
 
     def __str__(self):
         return self.user.email

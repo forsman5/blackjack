@@ -27,3 +27,18 @@
     {% endif %}
   </div>
 </nav>
+{# user has unfinished games and not on a game page already #}
+{% if user.is_authenticated and user.profile.unfinished_games.count > 0 and not game %}
+  <nav class="navbar bg-danger navbar-expand-sm navbar-fixed-top">
+    <p class="navbar-text navbar-left">
+      You have unfinished games!
+    </p>
+    <ul class="navbar-nav">
+      {% for game in user.profile.unfinished_games %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'gamePage' game.id %}">{{ game.id }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </nav>
+{% endif %}
