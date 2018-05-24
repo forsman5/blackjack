@@ -1,0 +1,9 @@
+<div class="row">
+  {% for card in hand %}
+    <div class="col-sm">
+      {{ card }} <!-- TODO: card.filename and link to image -->
+    </div>
+  {% endfor %}
+</div>
+<div class="row bg-light small-box opaque" align="center">Total value: {{ hand.string_value }}</div>
+<br><br>
