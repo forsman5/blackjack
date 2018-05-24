@@ -36,7 +36,7 @@
     <ul class="navbar-nav">
       {% for game in user.profile.unfinished_games %}
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'gamePage' game.id %}">{{ game.id }}</a>
+          <a class="nav-link btn-danger" href="{% url 'gamePage' game.id %}">{{ game.time_started }}</a>
         </li>
       {% endfor %}
     </ul>
