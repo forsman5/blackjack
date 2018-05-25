@@ -211,7 +211,7 @@ class Game(models.Model):
     # in keeping with the same style
     @property
     def has_split(self):
-        return self.player_split_hand == None
+        return self.player_split_hand != None
 
     @classmethod
     def create(cls, user, bet):
@@ -299,16 +299,21 @@ class Game(models.Model):
         self.player_split_hand = Hand.objects.create()
 
         # move the second card over to the new hand
-        self.player_hand[1].hand = self.player_split_hand
-
+        # to do this, we need to directly reference it, or else the reassign is forgotten before save
+        temp = self.player_hand[1]
+        temp.hand = self.player_split_hand
+        temp.save()
+        
         self.player_hand.hit(self.deck)
         self.player_split_hand.hit(self.deck)
 
         # now both hands should have two cards, as intended
 
-        # TODO: implement
-        # change the bet?
+        # update the bet, doubling it
+        self.user.profile.money -= self.bet
+        self.bet *= 2
 
+        self.user.profile.save()
         self.save()
 
     # The player insures
@@ -359,10 +364,10 @@ class Game(models.Model):
 
 class Card(models.Model):
     SUITS = (
-        ('CB', 'Club'),
-        ('SP', 'Spade'),
-        ('HT', 'Heart'),
-        ('DM', 'Diamond')
+        ('CB', 'Clubs'),
+        ('SP', 'Spades'),
+        ('HT', 'Hearts'),
+        ('DM', 'Diamonds')
     )
 
     VALUES = (
