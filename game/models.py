@@ -69,6 +69,7 @@ class Hand(models.Model):
         return settings.VALUE_SEPARATOR.join(filteredArr) if len(filteredArr) > 0 else str(min(valueArr))
 
     # hit from the passed in deck, into this hand
+    # returns the new card added to the hand (and removed from the deck)
     def hit(self, deck):
         # forbidden for decks
         if self.is_deck: raise settings.DECK_ACCESS_ERROR
@@ -88,6 +89,8 @@ class Hand(models.Model):
             self.stand()
 
         card.save()
+
+        return card
 
     # utility models
     def isBust(self):
@@ -303,7 +306,7 @@ class Game(models.Model):
         temp = self.player_hand[1]
         temp.hand = self.player_split_hand
         temp.save()
-        
+
         self.player_hand.hit(self.deck)
         self.player_split_hand.hit(self.deck)
 

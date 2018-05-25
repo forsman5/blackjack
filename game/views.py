@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse_lazy
 from django import forms
 from .forms import UserRegistrationForm, GameStartForm
@@ -105,12 +105,14 @@ def register(request):
 @login_required(login_url='login')
 def gameHit(request, game_id):
     game = get_object_or_404(Game, pk=game_id)
-    game.player_hand.hit()
+    card = game.player_hand.hit(game.deck)
 
-    if (game.player_hand.isBust()):
-        game.finish()
+    #if (game.player_hand.isBust()):
+        #game.finish()
 
-    # TODO: return new game state as an HTTP response
+    resp = HttpResponse()
+    resp['newCard'] = card
+    return resp
 
 @login_required(login_url='login')
 def gameStand(request, game_id):
