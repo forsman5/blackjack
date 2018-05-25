@@ -22,5 +22,5 @@ class GameStartForm(forms.Form):
     bet = forms.IntegerField(
         min_value = 0,
         required = True,
-        label = 'Bet'
+        label = 'Bet ($)'
     )

@@ -8,7 +8,7 @@
 <br><br>
 
 <div>
-  <p>Balance: {{ request.user.profile.money }}</p>
+  <p>Balance: ${{ request.user.profile.money }}</p>
   <form method="POST">
       {% csrf_token %} {{ form.as_p }}
       <button type="submit">Play Game</button>
