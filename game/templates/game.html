@@ -11,7 +11,7 @@
           <div class="card-header">
             <p class="display-4">Dealer</p>
           </div>
-          <div class="card-block">
+          <div class="card-block" id="dealer_hand">
             {% include 'partials/_hand.html' with hand=game.dealer_hand %}
           </div>
         </div>
@@ -19,12 +19,21 @@
           <div class="card-header">
             <p class="display-4">Player</p>
           </div>
-          <div class="card-block">
+          <div class="card-block" id="player_hand">
             {% include 'partials/_hand.html' with hand=game.player_hand %}
+          </div>
+          <div class="card-block" id="split_hand">
+            {% if game.player_split_hand != None %}
+              {% include 'partials/_hand.html' with hand=game.player_split_hand %}
+            {% endif %}
           </div>
         </div>
       </div>
       <div class="col-sm">
+        <div class="small-box opaque bg-light">
+          Your money: ${{ request.user.profile.money }}<br>
+          At stake: ${{ game.bet }}
+        </div>
         <div class="vertical-middle">
           <img src="{% static "images/deck.png" %}" alt="Deck" style="width:322px;height:370px;">
         </div>

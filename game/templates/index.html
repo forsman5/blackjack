@@ -6,9 +6,7 @@
   <br><br>
 
   {% if not request.user.is_authenticated %}
-    <div>
-      <a type="button" class="btn btn-outline-success" href="{% url 'login' %}">Log In</a>
-      <a type="button" class="btn btn-outline-secondary" href="{% url 'register' %}">Sign Up</a>
-    </div>
+    <a type="button" class="btn btn-outline-success" href="{% url 'login' %}">Log In</a>
+    <a type="button" class="btn btn-outline-secondary" href="{% url 'register' %}">Sign Up</a>
   {% endif %}
 {% endblock %}

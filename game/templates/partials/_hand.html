@@ -16,7 +16,7 @@
             {% if hidden and hand == game.dealer_hand and forloop.last %}
               ?
             {% else %}
-              {{ card.amount }} of {{ card.suit }} <!-- TODO: italicize -->
+              {{ card.get_amount_display }} of {{ card.get_suit_display }} <!-- TODO: italicize -->
             {% endif %}
           </div>
         </div>

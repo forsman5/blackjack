@@ -29,3 +29,8 @@ function split() {
     // TODO: display new game state returned
   });
 }
+
+// if the game ends, disable all buttons
+function disableButtons() {
+  // TODO: implement
+}
