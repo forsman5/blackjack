@@ -28,8 +28,24 @@
         </div>
       </div>
     </div>
-  </div>
-  <br>
 
-  <button type="button" class="btn btn-primary {% if not game.canInsure %} btn-disabled {% endif %}">Insure</button>
+    <br>
+
+    <div class="row" align="center">
+      <div class="col-sm">
+        <button type="button" class="btn btn-primary {% if game.player_hand.standing %} btn-disabled {% endif %}">Hit</button>
+        <button type="button" class="btn btn-primary {% if game.player_hand.standing %} btn-disabled {% endif %}">Stand</button>
+      </div>
+    </div>
+
+    <br>
+
+    <div class="row">
+      <div class="col-sm">
+        <button type="button" class="btn btn-primary {% if not game.canDouble or game.player_hand.standing %} btn-disabled {% endif %}">Double</button>
+        <button type="button" class="btn btn-primary {% if not game.canSplit or game.player_hand.standing %} btn-disabled {% endif %}">Split</button>
+        <button type="button" class="btn btn-primary {% if not game.canInsure or game.player_hand.standing %} btn-disabled {% endif %}">Insure</button>
+      </div>
+    </div>
+  </div>
 {% endblock %}
