@@ -29,13 +29,14 @@ def leaderboard(request):
 @login_required(login_url='login')
 def gamePage(request, game_id):
     game = get_object_or_404(Game, pk=game_id)
+    hidden = (not game.player_hand.isBust() and not game.player_hand.standing )
 
     if game.user != request.user:
         # this is not the user's game
         # TODO: notify the user that he cannot access that page
         return HttpResponseRedirect(reverse_lazy('user', args=(request.user.id,)))
 
-    return render(request, 'game.html', {'game': game})
+    return render(request, 'game.html', {'game': game, 'hidden': hidden})
 
 @login_required(login_url='login')
 def newGame(request):

@@ -3,11 +3,11 @@
 {# this is the form for a new game #}
 
 {% block content %}
-<div class="panel-heading display-2"> Get Ready to Play Blackjack!</div>
+<div class="display-2"> Get Ready to Play Blackjack!</div>
 
 <br><br>
 
-<div class="panel-body">
+<div>
   <p>Balance: {{ request.user.profile.money }}</p>
   <form method="POST">
       {% csrf_token %} {{ form.as_p }}

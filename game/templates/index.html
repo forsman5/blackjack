@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <div class="panel-heading display-1">Let's Play Blackjack!</div>
+  <div class="display-1">Let's Play Blackjack!</div>
 
   <br><br>
 
   {% if not request.user.is_authenticated %}
-    <div class="panel-body">
+    <div>
       <a type="button" class="btn btn-outline-success" href="{% url 'login' %}">Log In</a>
       <a type="button" class="btn btn-outline-secondary" href="{% url 'register' %}">Sign Up</a>
     </div>

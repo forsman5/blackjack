@@ -1,31 +1,35 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
-  <div class="panel-heading display-3">Game in Progress...</div>
-  {# Render the two hand partials here #}
   <div class="container">
-    <div class="panel-group">
-      <div class="panel panel-default">
-        <div class="panel-header">
-          <p class="display-4">Dealer</p>
-          <div class="panel-body">
+    <div class="row">
+      <div class="col-lg">
+        <div class="card">
+          <div class="card-header">
+            <p class="display-4">Dealer</p>
+          </div>
+          <div class="card-block">
             {% include 'partials/_hand.html' with hand=game.dealer_hand %}
           </div>
         </div>
-      </div>
-      <div class="panel panel-default">
-        <div class="panel-header">
-          <p class="display-4">Player</p>
-          <div class="panel-body">
+        <div class="card">
+          <div class="card-header">
+            <p class="display-4">Player</p>
+          </div>
+          <div class="card-block">
             {% include 'partials/_hand.html' with hand=game.player_hand %}
           </div>
         </div>
       </div>
+      <div class="col-sm">
+        <div class="vertical-middle">
+          <img src="{% static "images/deck.png" %}" alt="Deck" style="width:322px;height:370px;">
+        </div>
+      </div>
     </div>
   </div>
+  <br>
 
   <button type="button" class="btn btn-primary {% if not game.canInsure %} btn-disabled {% endif %}">Insure</button>
-
 {% endblock %}
-
-<!-- TODO: add deck -->

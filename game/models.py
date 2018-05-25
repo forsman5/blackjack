@@ -395,6 +395,14 @@ class Card(models.Model):
 
         return val
 
+    # helper method for templates
+    @property
+    def string_value(self):
+        if self.amount == 'A':
+            return '11 / 1'
+        else:
+            return self.value
+
     # return the filename of the image of this card
     @property
     def filename(self):

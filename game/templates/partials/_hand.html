@@ -1,9 +1,35 @@
-<div class="row">
-  {% for card in hand %}
-    <div class="col-sm">
-      {{ card }} <!-- TODO: card.filename and link to image -->
-    </div>
-  {% endfor %}
+{% load static %}
+
+<div class="container">
+  <div class="row">
+    {% for card in hand %}
+      <div class="col-sm">
+        <div class="card">
+          <div class="card-block">
+            {% if hidden and hand == game.dealer_hand and forloop.last %}
+              <img src="{% static "images/facedown.png" %}">
+            {% else %}
+              {{ card }} <!-- TODO: card.filename and link to image -->
+            {% endif %}
+          </div>
+          <div class="card-footer" align="center">
+            {% if hidden and hand == game.dealer_hand and forloop.last %}
+              ?
+            {% else %}
+              {{ card.amount }} of {{ card.suit }} <!-- TODO: italicize -->
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
 </div>
-<div class="row bg-light small-box opaque" align="center">Total value: {{ hand.string_value }}</div>
-<br><br>
+<br>
+<div class="card-footer" align="center">
+  Total value:
+  {% if hidden and hand == game.dealer_hand %}
+    {{ hand.card_set.first.string_value }}
+  {% else %}
+    {{ hand.string_value }}
+  {% endif %}
+</div>

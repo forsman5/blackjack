@@ -28,12 +28,18 @@ body {
 }
 
 .small-box {
-  padding-top: 40px;
-  padding-bottom: 40px;
+  padding-top: 35px;
+  padding-bottom: 35px;
 
   /* rounded edges */
   border-radius: 20px;
 
   width: 50%;
   margin: auto;
+}
+
+.vertical-middle {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }
