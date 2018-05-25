@@ -99,3 +99,45 @@ def register(request):
 
     # only hit this if either of the else cases are hit
     return render(request, 'register.html', {'form' : form})
+
+# Game actions below
+
+@login_required(login_url='login')
+def gameHit(request, game_id):
+    game = get_object_or_404(Game, pk=game_id)
+    game.player_hand.hit()
+
+    if (game.player_hand.isBust()):
+        game.finish()
+
+    # TODO: return new game state as an HTTP response
+
+@login_required(login_url='login')
+def gameStand(request, game_id):
+    game = get_object_or_404(Game, pk=game_id)
+
+    game.player_hand.stand()
+    game.processDealerLogic()
+
+    # TODO: return new game state as an HTTP response
+
+@login_required(login_url='login')
+def gameInsure(request, game_id):
+    game = get_object_or_404(Game, pk=game_id)
+    game.insure()
+
+    # TODO: return new game state as an HTTP response
+
+@login_required(login_url='login')
+def gameDouble(request, game_id):
+    game = get_object_or_404(Game, pk=game_id)
+    game.double()
+
+    # TODO: return new game state as an HTTP response
+
+@login_required(login_url='login')
+def gameSplit(request, game_id):
+    game = get_object_or_404(Game, pk=game_id)
+    game.split()
+
+    # TODO: return new game state as an HTTP response

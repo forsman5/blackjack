@@ -324,6 +324,7 @@ class Game(models.Model):
 
     # The player doubles their bet, hits once, and stands
     # Must send the new cards back as a post response
+    # will call finish
     def double(self):
         # guard from improper usage
         if not self.canDouble(): raise settings.GAME_ACTION_ERROR
@@ -342,6 +343,7 @@ class Game(models.Model):
         # if dealer.isbust
 
     # the player has stood. Now, the dealer's turn
+    # will call finish
     def processDealerLogic(self):
         # ensure this is being called at the right time
         if (not self.player_hand.standing or self.player_hand.isBust() or self.player_hand.isBlackjack()):
