@@ -3,7 +3,14 @@
 {% block content %}
   <div class="display-1">Let's Play Blackjack!</div>
 
-  <br><br>
+  <br>
+  <div class="display-4">
+    {{ gamesPlaying }} games in progress right now!
+    <br>
+    {{ gamesCompleted }} games played in total!
+  </div>
+
+  <br>
 
   {% if not request.user.is_authenticated %}
     <a type="button" class="btn btn-outline-success" href="{% url 'login' %}">Log In</a>

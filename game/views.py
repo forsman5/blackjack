@@ -13,8 +13,13 @@ from .models import Game, Profile
 from django.conf import settings
 
 def index(request):
+    # get the count of total games
+    # this is another spot where we cannot filter on
+    gamesPlaying = Game.objects.all().exclude(deck__isnull=True).count()
+    gamesCompleted = Game.objects.all().count() - gamesPlaying
+
     # the homepage
-    return render(request, 'index.html')
+    return render(request, 'index.html', {'gamesPlaying' : gamesPlaying, 'gamesCompleted': gamesCompleted})
 
 def userPage(request, user_id):
     user = get_object_or_404(User, pk=user_id)
