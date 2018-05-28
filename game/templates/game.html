@@ -44,8 +44,8 @@
 
     <div class="row" align="center">
       <div class="col-sm">
-        <a href = "{% url 'hit' game.id %}" type="button" class="btn btn-primary {% if game.player_hand.standing %} disabled {% endif %}">Hit</a>
-        <a href = "{% url 'stand' game.id %}" type="button" class="btn btn-primary {% if game.player_hand.standing %} disabled {% endif %}">Stand</a>
+        <a id="hit" type="button" class="btn btn-primary {% if game.player_hand.standing or game.player_hand.isBust or game.complete %} disabled {% endif %}">Hit</a>
+        <a id="stand" type="button" class="btn btn-primary {% if game.player_hand.standing or game.player_hand.isBust or game.complete %} disabled {% endif %}">Stand</a>
       </div>
     </div>
 
@@ -53,9 +53,9 @@
 
     <div class="row">
       <div class="col-sm">
-        <a href = "{% url 'double' game.id %}" type="button" class="btn btn-primary {% if not game.canDouble or game.player_hand.standing %} disabled {% endif %}">Double</a>
-        <a href = "{% url 'split' game.id %}" type="button" class="btn btn-primary {% if not game.canSplit or game.player_hand.standing %} disabled {% endif %}">Split</a>
-        <a href = "{% url 'insure' game.id %}" type="button" class="btn btn-primary {% if not game.canInsure or game.player_hand.standing %} disabled {% endif %}">Insure</a>
+        <a id="double" type="button" class="btn btn-primary {% if not game.canDouble or game.player_hand.standing or game.complete %} disabled {% endif %}">Double</a>
+        <a id="split" type="button" class="btn btn-primary {% if not game.canSplit or game.player_hand.standing or game.complete %} disabled {% endif %}">Split</a>
+        <a id="insure" type="button" class="btn btn-primary {% if not game.canInsure or game.player_hand.standing or game.complete %} disabled {% endif %}">Insure</a>
       </div>
     </div>
   </div>
